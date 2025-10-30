@@ -1,0 +1,48 @@
+# --- Build System Artifacts (General) ---
+*.o
+*.ko
+*.mod
+*.mod.c
+*.symvers
+*.order
+*.cmd          # <-- NEW: Exclude build command files (e.g., .nxp_simtemp.o.cmd)
+.tmp_versions
+modules.builtin*
+Module.symvers
+.cache
+
+# --- Kernel Module Build Output ---
+# Ignore all output files created by the 'make -C $(KDIR) M=$(PWD) modules' command
+/kernel/*.o
+/kernel/*.ko
+/kernel/*.mod
+/kernel/*.mod.c
+/kernel/*.cmd          
+/kernel/.tmp_versions
+/kernel/Module.symvers
+/kernel/modules.order
+/kernel/built-in.a
+/kernel/.modules.order.cmd
+/kernel/.nxp_simtemp.mod.cmd
+/kernel/.nxp_simtemp.o.cmd
+
+# --- Toolchain and External Dependencies (Compartmentalized) ---
+# Ignore the entire self-contained toolchain binary directory
+/nxp_toolchain/
+
+# Ignore the virtual environment for Python CLI
+/user/cli/.venv/
+/user/cli/__pycache__/
+
+# Python 3.8.4 Compilation Artifacts
+*.pyc
+*.pyo
+__pycache__
+
+# --- Editor/OS Junk Files ---
+*~
+\#*
+.DS_Store
+
+# Ignore internal notes (Modify in documentation stages)
+systems_sw_engineer_challenge_stage1.md
