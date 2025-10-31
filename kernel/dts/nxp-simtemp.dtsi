@@ -1,0 +1,19 @@
+// File: kernel/dts/nxp-simtemp.dtsi
+
+// Example node to be included in a main DT Source (.dts) file
+// This node will bind our nxp_simtemp platform driver.
+
+&soc { // Assumes this node is placed under the SoC bus/container
+
+    simtemp0: simtemp@400a0000 {
+        compatible = "nxp,simtemp";
+        reg = <0x400a0000 0x1000>; // Arbitrary virtual MMIO block
+        
+        // Initial configuration values read by the driver's probe function
+        sampling-ms = <100>;       // Sample every 100 ms
+        threshold-mC = <45000>;    // Alert threshold at 45.000 °C
+        
+        status = "okay";           // Tells the kernel to enable this device
+    };
+
+};

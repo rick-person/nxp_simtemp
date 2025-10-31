@@ -1,0 +1,36 @@
+# File: docs/devicetree/bindings/vendor/nxp-simtemp.yaml
+
+title: NXP Simulated Temperature Sensor
+
+description: |
+  A virtual platform device that simulates a temperature sensor,
+  used for testing embedded Linux driver paths (sysfs, char dev, poll).
+
+maintainers:
+  - Ricardo Loya <ricardo.loya.orduno@gmail.com>
+
+properties:
+  compatible:
+    const: "nxp,simtemp"
+    description: Should be "nxp,simtemp" to match the platform driver.
+
+  reg: 
+    maxItems: 1
+    description: A virtual memory mapped I/O (MMIO) region. Since this is a simulated
+      device, the address and size are arbitrary but required for a
+      standard platform device model.
+
+  sampling-ms:
+    $ref: /schemas/types.yaml#/definitions/uint32
+    description: Temperature sampling period in milliseconds.
+    minimum: 1
+    default: 100
+
+  threshold-mC:
+    $ref: /schemas/types.yaml#/definitions/int32
+    description: Alert threshold in milli-degrees Celsius (m°C).
+    default: 45000 # 45.000 °C
+
+required:
+  - compatible
+  - reg
