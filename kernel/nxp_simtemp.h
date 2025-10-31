@@ -1,4 +1,6 @@
-// File: kernel/nxp_simtemp.h (New Header File for Core Definitions)
+// File: kernel/nxp_simtemp.h 
+#ifndef _NXP_SIMTEMP_H_
+#define _NXP_SIMTEMP_H_
 
 #include <linux/types.h>
 
@@ -22,3 +24,5 @@ struct simtemp_ring_buffer {
     unsigned int head;      // Index where the producer (timer) writes
     unsigned int tail;      // Index where the consumer (read()) reads
 };
+
+#endif /* _NXP_SIMTEMP_H_ */
