@@ -29,6 +29,7 @@ Module.symvers
 # --- Toolchain and External Dependencies (Compartmentalized) ---
 # Ignore the entire self-contained toolchain binary directory
 /nxp_toolchain/
+/linux_toolchain/
 
 # Ignore the virtual environment for Python CLI
 /user/cli/.venv/
