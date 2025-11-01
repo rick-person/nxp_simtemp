@@ -27,7 +27,7 @@ static s32 global_sim_temp = 42000;
 struct nxp_simtemp_dev {
     struct device *dev;              // Pointer to the device structure (for logging, sysfs)
     struct miscdevice misc_dev;      // The character device structure for /dev/simtemp
-    struct simtemp_ring_buffer ring_buf;  // <-- NEW: Our bounded ring buffer
+    struct simtemp_ring_buffer ring_buf;  //bounded ring buffer
     
     // Configuration from DT/Sysfs
     u32 sampling_ms;                 // Sample period
@@ -55,8 +55,8 @@ static int simtemp_open(struct inode *inode, struct file *file)
     // Retrieve the pointer to the private device structure from the miscdevice container
     struct nxp_simtemp_dev *sdev;
 
-    sdev = container_of(file->f_op, struct nxp_simtemp_dev, misc_dev.fops);
-    
+    sdev = container_of(inode->i_cdev, struct nxp_simtemp_dev, misc_dev.this_device.devt);
+
     // Store sdev in file->private_data for use by read/ioctl/poll
     file->private_data = sdev; 
     
@@ -84,12 +84,12 @@ static ssize_t simtemp_read(struct file *file, char __user *buf, size_t count, l
         // If non-blocking flag (O_NONBLOCK) is set and there's no data after initial check:
         if (file->f_flags & O_NONBLOCK) {
             return -EAGAIN; 
-
+        }
         // Blocking read: wait until the head moves (data is available)
         ret = wait_event_interruptible(sdev->read_queue, 
                                        sdev->ring_buf.head != sdev->ring_buf.tail);
         
-        if (ret == -ERESTARTSYS)
+        if (ret == -ERESTARTSYS){
             return ret; // Wait was interrupted by a signal (e.g., Ctrl+C)
         }
     }

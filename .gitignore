@@ -47,3 +47,5 @@ __pycache__
 
 # Ignore internal notes (Modify in documentation stages)
 systems_sw_engineer_challenge_stage1.md
+scripts/prepare_kernel.sh
+old_build.sh
