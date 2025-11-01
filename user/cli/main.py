@@ -96,15 +96,31 @@ class SimtempCLI:
         os.close(self.device_fd)
         print("[*] Device closed.")
 
+    def set_config(self, threshold_mC=None, sampling_ms=None, use_ioctl=False):
+        """Sets configuration using Sysfs or IOCTL."""
+        fd = self.device_fd
+        
+        if use_ioctl:
+            if threshold_mC is not None:
+                ioctl_set_config(fd, SIMTEMP_SET_THRESHOLD, threshold_mC)
+            if sampling_ms is not None:
+                ioctl_set_config(fd, SIMTEMP_SET_SAMPLING, sampling_ms)
+        else:
+            # Use Sysfs as the default configuration method
+            if threshold_mC is not None:
+                set_sysfs_value('threshold_mC', threshold_mC)
+            if sampling_ms is not None:
+                set_sysfs_value('sampling_ms', sampling_ms)
+
     def run_test_mode(self):
             """Sets a low threshold and verifies a THRESHOLD_CROSSED event occurs."""
             TEST_THRESHOLD_MILI_C = 20000 # 20.0 C (Assuming simulated temp is higher than 25C default)
             TEST_TIMEOUT_MS = 5000 # 5 seconds
             
-            print(f"\n--- Starting CLI Test Mode ---")
+            print(f"\n--- Starting CLI Test Mode (IOCTL={use_ioctl}) ---")
             
-            # 1. Configure Threshold via Sysfs
-            set_sysfs_value('threshold_mC', TEST_THRESHOLD_MILI_C)
+            # 1. Configure Threshold via Sysfs or IOCTL
+            self.set_config(threshold_mC=TEST_THRESHOLD_MILI_C, use_ioctl=use_ioctl)
             
             # 2. Setup Poll for Alert
             poller = select.poll()

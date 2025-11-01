@@ -1,6 +1,9 @@
 # File: user/cli/simtemp_api.py
 
 import struct
+import fcntl
+import os
+
 from datetime import datetime, timezone
 from select import select
 
@@ -15,6 +18,14 @@ SAMPLE_SIZE = struct.calcsize(SAMPLE_STRUCT_FORMAT)
 # Flags (must match SIMTEMP_FLAG_NEW_SAMPLE=1 and SIMTEMP_FLAG_THRESHOLD_CROSSED=2)
 NEW_SAMPLE_FLAG = 0x1
 THRESHOLD_CROSSED_FLAG = 0x2
+
+# --- IOCTL Definitions (Must match nxp_simtemp_ioctl.h) ---
+NXP_SIMTEMP_MAGIC = ord('T')
+# Command Codes (defined in nxp_simtemp_ioctl.h)
+SIMTEMP_SET_THRESHOLD = fcntl.IOW(NXP_SIMTEMP_MAGIC, 3, struct.calcsize('i'))  # i=s32
+SIMTEMP_SET_SAMPLING = fcntl.IOW(NXP_SIMTEMP_MAGIC, 4, struct.calcsize('I'))   # I=u32
+SIMTEMP_GET_STATUS = fcntl.IOR(NXP_SIMTEMP_MAGIC, 2, struct.calcsize('I'))     # I=u32
+
 
 class SimtempSample:
     def __init__(self, raw_data):
@@ -51,3 +62,18 @@ def set_sysfs_value(attribute_name, value):
     except PermissionError:
         print(f"ERROR: Permission denied when writing to Sysfs. Run as root/sudo?")
         sys.exit(1)
+
+def ioctl_set_config(fd, command, value):
+    """Executes an IOW ioctl command with an integer value."""
+    # Pack the integer value into a binary buffer matching the C struct size
+    if command == SIMTEMP_SET_THRESHOLD:
+        fmt = 'i' # signed int
+    else:
+        fmt = 'I' # unsigned int
+        
+    packed_data = struct.pack(fmt, value)
+    
+    # The ioctl call
+    fcntl.ioctl(fd, command, packed_data)
+    
+    print(f"[*] IOCTL: Command {command} executed with value {value}.")
