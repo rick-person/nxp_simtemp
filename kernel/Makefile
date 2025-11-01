@@ -1,4 +1,4 @@
-# File: kernel/Makefile (Final Working Version - Native Host)
+# File: kernel/Makefile
 
 # ----------------------------------------------------
 # 1. Module Name Definition
@@ -6,19 +6,26 @@
 obj-m := nxp_simtemp.o
 
 # ----------------------------------------------------
-# 2. Source Files for the Module
+# 2. Source Files for the Module (Corrected CFLAGS)
 # ----------------------------------------------------
-nxp_simtemp-objs := nxp_simtemp.c
 
-# CRITICAL FIX: Disable optional compiler/linker features missing from host headers
-# This bypasses the 'Makefile.ubsan' and other similar missing file errors.
+# CRITICAL FIX: Aggressively disable ALL sanitizers and problematic warnings.
+# The previous '-fno-sanitize-address' was incorrect syntax for gcc-13.
+# We now explicitly disable the sanitizers observed in the verbose build output.
 KBUILD_CFLAGS += -Wno-unused-variable
 KBUILD_CFLAGS += -Wno-declaration-after-statement
 KBUILD_CFLAGS += -Wno-pointer-sign
 KBUILD_CFLAGS += -Wno-address-of-packed-member
 KBUILD_CFLAGS += -fno-stack-protector
-KBUILD_CFLAGS += -fno-sanitize-address
-KBUILD_CFLAGS += -fno-ubsan-checks # <-- Disables UBSAN
+# Corrected syntax for AddressSanitizer
+KBUILD_CFLAGS += -fno-sanitize=address 
+# Explicitly disable other sanitizers seen in verbose output
+KBUILD_CFLAGS += -fno-sanitize=bounds-strict
+KBUILD_CFLAGS += -fno-sanitize=shift
+KBUILD_CFLAGS += -fno-sanitize=bool
+KBUILD_CFLAGS += -fno-sanitize=enum
+# Consider adding this if 'fno-ubsan-checks' returns:
+# KBUILD_CFLAGS += -fno-ubsan
 
 # ----------------------------------------------------
 # 3. Build Targets
