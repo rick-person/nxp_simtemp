@@ -1,0 +1,48 @@
+digraph G {
+    graph [overlap=false, splines=true, compound=true, rankdir="LR", labelloc="t"];
+    node [shape=box, style="filled", fillcolor="lightgray", fontname="Arial"];
+    edge [fontname="Arial"];
+
+    subgraph cluster_kernel {
+        label = "Linux Kernel Space";
+        color = "blue";
+        style = "dashed";
+        rank = same;
+
+        HRTimer [label="HRTimer\n(Producer)", fillcolor="lightblue"];
+        RingBuffer [label="Ring Buffer\n(Shared Memory)", fillcolor="lightyellow"];
+        WaitQueue [label="Wait Queue\n(Event Signaling)", fillcolor="lightgreen"];
+        CharDev_Read [label="Char Device\n(/dev/simtemp read)", fillcolor="lightcoral"];
+        Sysfs [label="Sysfs\n(Configuration)", fillcolor="lightsteelblue"];
+        IOCTL [label="IOCTL\n(Configuration)", fillcolor="lightsteelblue"];
+
+        HRTimer -> RingBuffer [label="1. Write Sample\n(Spinlock)", color="blue", penwidth=2];
+        RingBuffer -> WaitQueue [label="2. Wakeup\n(Spinlock)", color="red"];
+        WaitQueue -> CharDev_Read [label="3. Unblocks poll()", color="red", style="dashed"];
+
+        // Implicit flow within kernel (char dev uses ring buffer)
+        CharDev_Read -> RingBuffer [label="Read Sample\n(Spinlock)", color="blue", dir="back", style="dotted"];
+
+        // Shared Configuration
+        Sysfs -> RingBuffer [label="Config Update\n(Spinlock)", color="darkgreen"];
+        IOCTL -> RingBuffer [label="Config Update\n(Spinlock)", color="darkgreen"];
+
+    }
+
+    subgraph cluster_userspace {
+        label = "User Space";
+        color = "red";
+        style = "dashed";
+        rank = same;
+
+        UserCLI [label="User CLI\n(Consumer)", fillcolor="cornsilk"];
+
+        UserCLI -> CharDev_Read [label="3. Blocking Read", color="blue", penwidth=2];
+        UserCLI -> WaitQueue [label="3. poll()/epoll\n(Blocks)", color="red"];
+        UserCLI -> Sysfs [label="4. Write Config", color="darkgreen"];
+        UserCLI -> IOCTL [label="4. Call Config", color="darkgreen"];
+    }
+
+    // External communication edges
+    CharDev_Read -> UserCLI [label="3. Deliver Data", color="blue", dir="forward", penwidth=2];
+}
