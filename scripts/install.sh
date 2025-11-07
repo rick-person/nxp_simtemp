@@ -1,32 +1,30 @@
 #!/bin/bash
 # File: scripts/install.sh
-# Purpose: Creates a Python virtual environment and installs CLI dependencies.
+# Purpose: Sets up the Python virtual environment and installs dependencies.
+
 set -e
 
-echo "--- Installing CLI Dependencies ---"
+PROJECT_ROOT="$(dirname "$(readlink -f "$0")")/.."
+CLI_DIR="$PROJECT_ROOT/user/cli"
+VENV_PATH="$CLI_DIR/.venv"
+REQUIREMENTS="$CLI_DIR/requirements.txt"
 
-# 1. Ensure Python 3 is available
-if ! command -v python3 &> /dev/null
-then
-    echo "ERROR: python3 could not be found. Please install a compatible version."
-    exit 1
+echo "[*] Setting up Python virtual environment..."
+
+# 1. Create virtual environment if it doesn't exist
+if [ ! -d "$VENV_PATH" ]; then
+    python3 -m venv "$VENV_PATH"
+    echo "[*] Virtual environment created at $VENV_PATH"
 fi
 
-# 2. Navigate to CLI directory
-cd user/cli/
+# 2. Activate Venv (for the script execution)
+source "$VENV_PATH/bin/activate"
 
-# 3. Create the Virtual Environment (.venv)
-if [ ! -d ".venv" ]; then
-    echo "[*] Creating virtual environment..."
-    # Use the default python3 (which is usually 3.10+ on 22.04)
-    python3 -m venv .venv
+# 3. Install dependencies from requirements.txt (if file exists)
+if [ -f "$REQUIREMENTS" ]; then
+    pip install --upgrade pip
+    pip install -r "$REQUIREMENTS"
+    echo "[*] Python dependencies installed."
+else
+    echo "[*] Note: requirements.txt not found. Assuming only standard libraries are used."
 fi
-
-# 4. Activate Venv and Install Requirements
-echo "[*] Installing requirements from requirements.txt..."
-source .venv/bin/activate
-pip install --upgrade pip
-pip install -r requirements.txt
-
-echo "[*] Installation complete. Environment ready."
-deactivate # Deactivate the venv
