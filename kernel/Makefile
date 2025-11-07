@@ -10,8 +10,6 @@ obj-m := nxp_simtemp.o
 # ----------------------------------------------------
 
 # CRITICAL FIX: Aggressively disable ALL sanitizers and problematic warnings.
-# The previous '-fno-sanitize-address' was incorrect syntax for gcc-13.
-# We now explicitly disable the sanitizers observed in the verbose build output.
 KBUILD_CFLAGS += -Wno-unused-variable
 KBUILD_CFLAGS += -Wno-declaration-after-statement
 KBUILD_CFLAGS += -Wno-pointer-sign
@@ -24,8 +22,11 @@ KBUILD_CFLAGS += -fno-sanitize=bounds-strict
 KBUILD_CFLAGS += -fno-sanitize=shift
 KBUILD_CFLAGS += -fno-sanitize=bool
 KBUILD_CFLAGS += -fno-sanitize=enum
-# Consider adding this if 'fno-ubsan-checks' returns:
 # KBUILD_CFLAGS += -fno-ubsan
+
+# ----------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------------
 
 # ----------------------------------------------------
 # 3. Build Targets

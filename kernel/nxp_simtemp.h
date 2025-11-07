@@ -25,4 +25,8 @@ struct simtemp_ring_buffer {
     unsigned int tail;      // Index where the consumer (read()) reads
 };
 
+// --- Sample Flags ---
+#define SIMTEMP_FLAG_NEW_SAMPLE         0x1
+#define SIMTEMP_FLAG_THRESHOLD_CROSSED  0x2
+
 #endif /* _NXP_SIMTEMP_H_ */
