@@ -7,7 +7,7 @@ The system utilizes a standard **Producer-Consumer model** that is fully mediate
 The primary architectural goal was to ensure **concurrency safety** and **non-blocking asynchronous event delivery**.
 
 ### Block Diagram of Interaction
-
+![NXP Simtemp Interaction Diagram](nxp_simtemp/docs/simtemp_interaction.png)
 
 ### Component Interaction Description
 
@@ -26,7 +26,6 @@ The primary architectural goal was to ensure **concurrency safety** and **non-bl
     * **IOCTL:** Used for atomic, binary configuration calls, bypassing Sysfs string parsing overhead.
 
 ---
-
 ## 2. API and Design Choices
 
 ### 2.1 Concurrency and Locking Model
@@ -67,5 +66,3 @@ We chose **Spinlocks** (`spinlock_t lock`) for concurrency management.
 * **Dedicated Workqueue (Stretch):** Offload sample processing (simulation, threshold check) from the HRTimer's interrupt context to a dedicated workqueue to minimize latency in the interrupt handler.
 
 ---
-
-**[End of DESIGN.md]**
