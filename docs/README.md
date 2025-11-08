@@ -20,7 +20,7 @@ This project implements the "Virtual Sensor + Alert Path" challenge, consisting 
 | Detail | Link |
 | :--- | :--- |
 | **Git Repository** | [https://github.com/rick-person/nxp_simtemp.git] |
-| **Demo Video** | [LINK_TO_YOUR_VIDEO_DEMO_HERE] |
+| **Demo Video** | [https://github.com/rick-person/nxp_simtemp/blob/2652ed26cc8b629625c24d42d8d440ed1523edd4/docs/DEMO_video.mp4] |
 
 ---
 
