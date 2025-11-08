@@ -1,0 +1,25 @@
+From 2b7ba9d7c08c19c975baf5633ac42a35155c891e Mon Sep 17 00:00:00 2001
+From: rick-person <ricardo.loya.orduno@gmail.com>
+Date: Fri, 7 Nov 2025 20:42:26 -0600
+Subject: [PATCH] Task 12: adding video URL
+
+---
+ docs/README.md | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/docs/README.md b/docs/README.md
+index 24048cf..796c1e1 100644
+--- a/docs/README.md
++++ b/docs/README.md
+@@ -20,7 +20,7 @@ This project implements the "Virtual Sensor + Alert Path" challenge, consisting
+ | Detail | Link |
+ | :--- | :--- |
+ | **Git Repository** | [https://github.com/rick-person/nxp_simtemp.git] |
+-| **Demo Video** | [LINK_TO_YOUR_VIDEO_DEMO_HERE] |
++| **Demo Video** | [https://github.com/rick-person/nxp_simtemp/blob/2652ed26cc8b629625c24d42d8d440ed1523edd4/docs/DEMO_video.mp4] |
+ 
+ ---
+ 
+-- 
+2.43.0
+
